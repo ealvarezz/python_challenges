@@ -64,8 +64,8 @@ def adjacent_okay(s, val, r, c):
 
 
 def attempt(s):
-    print_solution(s)
-    print('\n')
+    #print_solution(s)
+    #print('\n')
     if s.to_do.empty():
         return True
 
