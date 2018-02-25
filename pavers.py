@@ -1,4 +1,4 @@
-# pylint: disable=missing-docstring, too-few-public-methods, invalid-name, unused-variable, trailing-whitespace, too-many-locals, bad-whitespace
+# pylint: disable=missing-docstring, too-few-public-methods, invalid-name, unused-variable, trailing-whitespace, too-many-locals, bad-whitespace, trailing-newlines, line-too-long
 import math
 import sys
 
@@ -14,7 +14,7 @@ def comp_tiles(F, F1, F2, F3):
         G1.append(0)
         G2.append(0)
         G3.append(0)
-      
+
     F[0], F[1], F[2] =  1, 2, 11
     F1[0], F1[1], F1[2] =  0, 2, 16
     F2[0], F2[1], F2[2] =  0, 1, 8
@@ -56,8 +56,7 @@ def main():
         elif n == 1:
             print(data_set_number + " 2 2 1 0")
         else:
-            print(data_set_number + " " + str(F[n]) + " " + str(F1[n]) + " " + str(F2[n]) + " " + str(F3[n]))
-            
+            print(data_set_number + " " + str(F[n]) + " " + str(F1[n]) + " " + str(F2[n]) + " " + str(F3[n])) 
 
 main()
 
