@@ -1,17 +1,29 @@
 # pylint: disable=missing-docstring, too-few-public-methods, invalid-name, unused-variable, trailing-whitespace, too-many-locals, trailing-newlines, no-else-return, too-many-branches, too-many-statements, too-many-nested-blocks, line-too-long,bad-whitespace, too-many-return-statements, too-many-instance-attributes, too-many-arguments 
 import sys
+import math
 
 ALL_MASK = 0x1ff
 valid_masks = [0, 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x100]
 constraints = [[0 for i in range(9)] for j in range(15)]
 
 class _search_state_:
-    def __init__(self):
-        avail_mask = [[ALL_MASK for i in range(9)] for j in range(9)]
-        row_avail_counts = [[9 for i in range(9)] for j in range(9)]
-        col_avail_counts = [[9 for i in range(9)] for j in range(9)]
-        val_set = [[0 for i in range(9)] for j in range(9)]
-        box_avail_counts = [[[9 for i in range(9)] for j in range(3)] for z in range(3)]
+    def __init__(self, avail_mask=None, row_avail_counts=None,
+                 col_avail_counts=None, val_set=None, box_avail_counts=None):
+
+        if avail_mask is None:
+            self.avail_mask = [[ALL_MASK for i in range(9)] for j in range(9)]
+
+        if row_avail_counts is None:
+            self.row_avail_counts = [[9 for i in range(9)] for j in range(9)]
+
+        if col_avail_counts is None:
+            self.col_avail_counts = [[9 for i in range(9)] for j in range(9)]
+
+        if val_set is None:
+            self.val_set = [[0 for i in range(9)] for j in range(9)]
+
+        if box_avail_counts is None:
+            self.box_avail_counts = [[[9 for i in range(9)] for j in range(3)] for z in range(3)]
 
 states = [_search_state_() for i in range(81)]
 
@@ -155,7 +167,7 @@ def check_constraints(pss):
                             if valid_masks[i] & tot_result:
                                 pss.col_avail_counts[col][i-1] -= 1
                                 pss.row_avail_counts[row][i-1] -= 1
-                                pss.box_avail_counts[row/3][col/3][i-1] -= 1
+                                pss.box_avail_counts[math.floor(row/3)][math.floor(col/3)][i-1] -= 1
 
                 if (col % 3) != 2:
                     base_cons_col += 1
@@ -279,22 +291,22 @@ def apply_choice(pss, row, col, val):
         print("Apply choice something went wrong at the beggining")
         return -1
     pss.val_set[row][col] = val
-    boxr = row/3
-    boxc = col/3
+    boxr = math.floor(row/3)
+    boxc = math.floor(col/3)
     for j in range(9):
         if pss.avail_mask[row][j] & mask:
-            pss.box_avail_counts[boxr][j/3][val-1] -= 1
+            pss.box_avail_counts[boxr][math.floor(j/3)][val-1] -= 1
             pss.col_avail_counts[j][val-1] -= 1
         pss.avail_mask[row][j] &= ~mask
 
     for i in range(9):
         if pss.avail_mask[i][col] & mask:
-            pss.box_avail_counts[i/3][boxc][val-1] -= 1
+            pss.box_avail_counts[math.floor(i/3)][boxc][val-1] -= 1
             pss.row_avail_counts[i][val-1] -= 1
         pss.avail_mask[i][col] &= ~mask
 
-    boxr = row/3
-    boxc = col/3
+    boxr = math.floor(row/3)
+    boxc = math.floor(col/3)
     for i in range(3*boxr, 3*(boxr+1)):
         for j in range(3*boxc, 3*(boxc+1)):
             if pss.avail_mask[i][j] & mask:
@@ -304,7 +316,7 @@ def apply_choice(pss, row, col, val):
 
     for i in range(1, 10):
         if (i != val) and ((pss.avail_mask[row][col] & valid_masks[i]) != 0):
-            pss.box_avail_counts[row/3][col/3][i-1] -= 1
+            pss.box_avail_counts[math.floor(row/3)][math.floor(col/3)][i-1] -= 1
             pss.col_avail_counts[col][i-1] -= 1
             pss.row_avail_counts[row][i-1] -= 1
 
@@ -361,7 +373,7 @@ def main():
         print(index)
         for i in range(9):
             for j in range(9):
-                print(str(states[0].val_set[i][j]), end='')
+                print(str(states[0].val_set[i][j]) + " ", end='')
             print()
 
     return 0
