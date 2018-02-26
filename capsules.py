@@ -17,11 +17,12 @@ class Cell:
         return len(self.adj) > len(other.adj)
 
 class Solution:
-    def __init__(self, grid=None, to_do=None):
-        if to_do is None:
-            self.to_do = Q.PriorityQueue()
-        if grid is None:
-            self.grid = []
+    grid = None
+    to_do = None
+
+    def __init__(self):
+        self.to_do = Q.PriorityQueue()
+        self.grid = []
 
 def init_solution(s, row, col, infile):
 
@@ -42,13 +43,14 @@ def init_solution(s, row, col, infile):
         blk_inf = infile.readline().split()
         nsquares = int(blk_inf[0])
         for j in range(1, nsquares + 1):
-            blk.add(chr(48 + j))
+            blk.add(j)
 
 
         for j in range(1, nsquares + 1):
             r = int(blk_inf[j][1])
             c = int(blk_inf[j][3])
-            blk.discard(s.grid[r][c].val)
+            if s.grid[r][c].val != '-':
+                blk.discard(int(s.grid[r][c].val))
             s.grid[r][c].adj = blk
             if s.grid[r][c].val == '-':
                 s.to_do.put(s.grid[r][c])
@@ -58,7 +60,7 @@ def adjacent_okay(s, val, r, c):
 
     for i in range(-1, 2):
         for j in range(-1, 2):
-            if s.grid[r + i][c + j].val == val:
+            if s.grid[r + i][c + j].val == str(val):
                 return False
     return True
 
@@ -77,7 +79,7 @@ def attempt(s):
     for x in avail:
         if adjacent_okay(s, x, row, col):
             curr.adj.discard(x)
-            s.grid[row][col].val = x
+            s.grid[row][col].val = str(x)
 
             if attempt(s):
                 return True
