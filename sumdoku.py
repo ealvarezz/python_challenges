@@ -25,7 +25,44 @@ class _search_state_:
         if box_avail_counts is None:
             self.box_avail_counts = [[[9 for i in range(9)] for j in range(3)] for z in range(3)]
 
-states = [_search_state_() for i in range(81)]
+#states = [_search_state_() for i in range(81)]
+states = []
+
+for xx in range(81):
+    states.append(_search_state_())
+
+def print_state():
+    for i in range(81):
+
+        print("state #" + str(i + 1))
+        print("avail_mask")
+        for i1 in states[i].avail_mask:
+            for mask in i1:
+                print(str(mask) + " ", end='')
+            print()
+        print()
+
+        print("row_avail_counts")
+        for i1 in states[i].row_avail_counts:
+            for count in i1:
+                print(str(count) + " ", end='')
+            print()
+        print()
+
+        print("col_avail_counts")
+        for i1 in states[i].col_avail_counts:
+            for count in i1:
+                print(str(count) + " ", end='')
+            print()
+        print()
+
+        print("val_set")
+        for i1 in states[i].val_set:
+            for sett in i1:
+                print(str(sett) + " ", end='')
+            print()
+        print()
+
 
 # In this case prow will be equal to constraints[5*i*2*j] or +1, do not include
 # the zero since we want to pass the list, not the value
@@ -329,6 +366,9 @@ def apply_choice(pss, row, col, val):
 
 
 def solve(level):
+    if level == 25:
+        print_state()
+
     pssnxt = _search_state_()
     pss = states[level]
     sd = _solve_data_()
@@ -366,6 +406,7 @@ def main():
 
     for curprob in range(0, p):
         index = infile.readline().split()[0]
+        states[0] = _search_state_()
         ret = scan_constraints(infile)
         if check_constraints(states[0]) != 0:
             print("Wack")
