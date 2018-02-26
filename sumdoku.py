@@ -1,29 +1,25 @@
 # pylint: disable=missing-docstring, too-few-public-methods, invalid-name, unused-variable, trailing-whitespace, too-many-locals, trailing-newlines, no-else-return, too-many-branches, too-many-statements, too-many-nested-blocks, line-too-long,bad-whitespace, too-many-return-statements, too-many-instance-attributes, too-many-arguments 
 import sys
 import math
+from copy import deepcopy
 
 ALL_MASK = 0x1ff
 valid_masks = [0, 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x100]
 constraints = [[0 for i in range(9)] for j in range(15)]
 
 class _search_state_:
-    def __init__(self, avail_mask=None, row_avail_counts=None,
-                 col_avail_counts=None, val_set=None, box_avail_counts=None):
+    avail_mask = None
+    row_avail_counts = None
+    col_avail_counts = None
+    val_set = None
+    box_avail_counts = None
 
-        if avail_mask is None:
-            self.avail_mask = [[ALL_MASK for i in range(9)] for j in range(9)]
-
-        if row_avail_counts is None:
-            self.row_avail_counts = [[9 for i in range(9)] for j in range(9)]
-
-        if col_avail_counts is None:
-            self.col_avail_counts = [[9 for i in range(9)] for j in range(9)]
-
-        if val_set is None:
-            self.val_set = [[0 for i in range(9)] for j in range(9)]
-
-        if box_avail_counts is None:
-            self.box_avail_counts = [[[9 for i in range(9)] for j in range(3)] for z in range(3)]
+    def __init__(self):
+        self.avail_mask = [[ALL_MASK for i in range(9)] for j in range(9)]
+        self.row_avail_counts = [[9 for i in range(9)] for j in range(9)]
+        self.col_avail_counts = [[9 for i in range(9)] for j in range(9)]
+        self.val_set = [[0 for i in range(9)] for j in range(9)]
+        self.box_avail_counts = [[[9 for i in range(9)] for j in range(3)] for z in range(3)]
 
 #states = [_search_state_() for i in range(81)]
 states = []
@@ -366,8 +362,8 @@ def apply_choice(pss, row, col, val):
 
 
 def solve(level):
-    if level == 25:
-        print_state()
+    #if level == 25:
+    #    print_state()
 
     pssnxt = _search_state_()
     pss = states[level]
@@ -383,7 +379,7 @@ def solve(level):
             return 0
         else:
 
-            states[level + 1] = pss
+            states[level + 1] = deepcopy(pss)
             pssnxt = states[level + 1]
 
             if apply_choice(pssnxt, sd.test_row, sd.test_col, sd.solve_val) == 0:

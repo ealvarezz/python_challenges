@@ -126,7 +126,7 @@ def main():
             Adjacent[query2[i]-1][nnodes + i] = -1.0
 
         solve_matrix(Adjacent, nnodes, nqueries)
-        print(cur, end='')
+        print(cur + 1, end='')
         for i in range(0, nqueries):
             dist = math.fabs(Adjacent[query1[i]-1][nnodes + i] - Adjacent[query2[i]-1][nnodes + i])
             print(" %.3lf" % (dist), end='')
